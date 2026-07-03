@@ -1,45 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-
+const express = require('express');
+const path = require('path');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-
-const webhookURL = "https://discord.com/oauth2/authorize?client_id=1503445813253378088&permissions=68624&integration_type=0&scope=bot";
-
-app.post("/message", async (req, res) => {
-    const { pseudo, message } = req.body;
-
-    try {
-        await fetch(webhookURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                content:
-`🤖 Nouveau message IA
-
-👤 Utilisateur : ${pseudo}
-
-💬 Message :
-${message}`
-            })
-        });
-
-        res.json({ success: true });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false });
-    }
+// Quand on arrive sur le site, on charge l'index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get("/", (req, res) => {
-    res.send("IA esclave de Nelio active 😎");
-});
-
-app.listen(3000, () => {
-    console.log("Serveur lancé sur le port 3000 😎");
+app.listen(PORT, () => {
+    console.log(`Le serveur du jeu est lancé sur le port ${PORT}`);
 });
